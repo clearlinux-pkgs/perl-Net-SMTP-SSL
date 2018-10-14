@@ -4,15 +4,15 @@
 #
 Name     : perl-Net-SMTP-SSL
 Version  : 1.04
-Release  : 1
+Release  : 2
 URL      : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libn/libnet-smtp-ssl-perl/libnet-smtp-ssl-perl_1.04-1.debian.tar.xz
 Summary  : 'SSL support for Net::SMTP'
 Group    : Development/Tools
 License  : Artistic-1.0 GPL-1.0
-Requires: perl-Net-SMTP-SSL-license
-Requires: perl-Net-SMTP-SSL-man
+Requires: perl-Net-SMTP-SSL-license = %{version}-%{release}
+BuildRequires : buildreq-cpan
 BuildRequires : perl(IO::Socket::SSL)
 BuildRequires : perl(Net::SSLeay)
 
@@ -24,6 +24,15 @@ use Net::SMTP::SSL;
 
 my $smtps = Net::SMTP::SSL->new("example.com", Port => 465);
 
+%package dev
+Summary: dev components for the perl-Net-SMTP-SSL package.
+Group: Development
+Provides: perl-Net-SMTP-SSL-devel = %{version}-%{release}
+
+%description dev
+dev components for the perl-Net-SMTP-SSL package.
+
+
 %package license
 Summary: license components for the perl-Net-SMTP-SSL package.
 Group: Default
@@ -32,19 +41,11 @@ Group: Default
 license components for the perl-Net-SMTP-SSL package.
 
 
-%package man
-Summary: man components for the perl-Net-SMTP-SSL package.
-Group: Default
-
-%description man
-man components for the perl-Net-SMTP-SSL package.
-
-
 %prep
-tar -xf %{SOURCE1}
-cd ..
 %setup -q -n Net-SMTP-SSL-1.04
-mkdir -p %{_topdir}/BUILD/Net-SMTP-SSL-1.04/deblicense/
+cd ..
+%setup -q -T -D -n Net-SMTP-SSL-1.04 -b 1
+mkdir -p deblicense/
 mv %{_topdir}/BUILD/debian/* %{_topdir}/BUILD/Net-SMTP-SSL-1.04/deblicense/
 
 %build
@@ -69,12 +70,12 @@ make TEST_VERBOSE=1 test
 
 %install
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/perl-Net-SMTP-SSL
-cp deblicense/copyright %{buildroot}/usr/share/doc/perl-Net-SMTP-SSL/deblicense_copyright
+mkdir -p %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL
+cp deblicense/copyright %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL/deblicense_copyright
 if test -f Makefile.PL; then
-make pure_install PERL_INSTALL_ROOT=%{buildroot}
+make pure_install PERL_INSTALL_ROOT=%{buildroot} INSTALLDIRS=vendor
 else
-./Build install --installdirs=site --destdir=%{buildroot}
+./Build install --installdirs=vendor --destdir=%{buildroot}
 fi
 find %{buildroot} -type f -name .packlist -exec rm -f {} ';'
 find %{buildroot} -depth -type d -exec rmdir {} 2>/dev/null ';'
@@ -83,12 +84,12 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/perl5/site_perl/5.26.1/Net/SMTP/SSL.pm
+/usr/lib/perl5/vendor_perl/5.26.1/Net/SMTP/SSL.pm
 
-%files license
-%defattr(-,root,root,-)
-/usr/share/doc/perl-Net-SMTP-SSL/deblicense_copyright
-
-%files man
+%files dev
 %defattr(-,root,root,-)
 /usr/share/man/man3/Net::SMTP::SSL.3
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/perl-Net-SMTP-SSL/deblicense_copyright
