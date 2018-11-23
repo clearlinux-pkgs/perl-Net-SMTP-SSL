@@ -4,7 +4,7 @@
 #
 Name     : perl-Net-SMTP-SSL
 Version  : 1.04
-Release  : 4
+Release  : 5
 URL      : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libn/libnet-smtp-ssl-perl/libnet-smtp-ssl-perl_1.04-1.debian.tar.xz
