@@ -4,7 +4,7 @@
 #
 Name     : perl-Net-SMTP-SSL
 Version  : 1.04
-Release  : 11
+Release  : 12
 URL      : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libn/libnet-smtp-ssl-perl/libnet-smtp-ssl-perl_1.04-1.debian.tar.xz
@@ -12,6 +12,7 @@ Summary  : 'SSL support for Net::SMTP'
 Group    : Development/Tools
 License  : Artistic-1.0 GPL-1.0
 Requires: perl-Net-SMTP-SSL-license = %{version}-%{release}
+Requires: perl-Net-SMTP-SSL-perl = %{version}-%{release}
 BuildRequires : buildreq-cpan
 BuildRequires : perl(IO::Socket::SSL)
 BuildRequires : perl(Net::SSLeay)
@@ -28,6 +29,7 @@ my $smtps = Net::SMTP::SSL->new("example.com", Port => 465);
 Summary: dev components for the perl-Net-SMTP-SSL package.
 Group: Development
 Provides: perl-Net-SMTP-SSL-devel = %{version}-%{release}
+Requires: perl-Net-SMTP-SSL = %{version}-%{release}
 
 %description dev
 dev components for the perl-Net-SMTP-SSL package.
@@ -41,18 +43,28 @@ Group: Default
 license components for the perl-Net-SMTP-SSL package.
 
 
+%package perl
+Summary: perl components for the perl-Net-SMTP-SSL package.
+Group: Default
+Requires: perl-Net-SMTP-SSL = %{version}-%{release}
+
+%description perl
+perl components for the perl-Net-SMTP-SSL package.
+
+
 %prep
 %setup -q -n Net-SMTP-SSL-1.04
-cd ..
-%setup -q -T -D -n Net-SMTP-SSL-1.04 -b 1
+cd %{_builddir}
+tar xf %{_sourcedir}/libnet-smtp-ssl-perl_1.04-1.debian.tar.xz
+cd %{_builddir}/Net-SMTP-SSL-1.04
 mkdir -p deblicense/
-mv %{_topdir}/BUILD/debian/* %{_topdir}/BUILD/Net-SMTP-SSL-1.04/deblicense/
+cp -r %{_builddir}/debian/* %{_builddir}/Net-SMTP-SSL-1.04/deblicense/
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
+export LANG=C.UTF-8
 if test -f Makefile.PL; then
 %{__perl} Makefile.PL
 make  %{?_smp_mflags}
@@ -62,7 +74,7 @@ else
 fi
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
@@ -71,7 +83,7 @@ make TEST_VERBOSE=1 test
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL
-cp deblicense/copyright %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL/deblicense_copyright
+cp %{_builddir}/Net-SMTP-SSL-1.04/deblicense/copyright %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL/a2cc7c2b3eca0e259ce85f70493bfe95e2fd8dff
 if test -f Makefile.PL; then
 make pure_install PERL_INSTALL_ROOT=%{buildroot} INSTALLDIRS=vendor
 else
@@ -84,7 +96,6 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/perl5/vendor_perl/5.28.2/Net/SMTP/SSL.pm
 
 %files dev
 %defattr(-,root,root,-)
@@ -92,4 +103,8 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/perl-Net-SMTP-SSL/deblicense_copyright
+/usr/share/package-licenses/perl-Net-SMTP-SSL/a2cc7c2b3eca0e259ce85f70493bfe95e2fd8dff
+
+%files perl
+%defattr(-,root,root,-)
+/usr/lib/perl5/vendor_perl/5.30.1/Net/SMTP/SSL.pm
