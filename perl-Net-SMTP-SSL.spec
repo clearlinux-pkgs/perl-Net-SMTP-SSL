@@ -4,7 +4,7 @@
 #
 Name     : perl-Net-SMTP-SSL
 Version  : 1.04
-Release  : 12
+Release  : 13
 URL      : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/R/RJ/RJBS/Net-SMTP-SSL-1.04.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libn/libnet-smtp-ssl-perl/libnet-smtp-ssl-perl_1.04-1.debian.tar.xz
@@ -83,7 +83,7 @@ make TEST_VERBOSE=1 test
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL
-cp %{_builddir}/Net-SMTP-SSL-1.04/deblicense/copyright %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL/a2cc7c2b3eca0e259ce85f70493bfe95e2fd8dff
+cp %{_builddir}/debian/copyright %{buildroot}/usr/share/package-licenses/perl-Net-SMTP-SSL/a2cc7c2b3eca0e259ce85f70493bfe95e2fd8dff
 if test -f Makefile.PL; then
 make pure_install PERL_INSTALL_ROOT=%{buildroot} INSTALLDIRS=vendor
 else
@@ -107,4 +107,4 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files perl
 %defattr(-,root,root,-)
-/usr/lib/perl5/vendor_perl/5.30.1/Net/SMTP/SSL.pm
+/usr/lib/perl5/vendor_perl/5.30.2/Net/SMTP/SSL.pm
